@@ -2,6 +2,9 @@
 name: ad-service-ci
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -62,7 +65,7 @@ jobs:
           cd src/ad
           ./gradlew test
 
-  docker:
+  image-update:
     runs-on: ubuntu-latest
     needs: [build]
 
@@ -85,5 +88,48 @@ jobs:
           context: src/ad
           file: src/ad/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/otel-demo-ad-service:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/otel-demo-ad-service:${{ github.run_id}}
 
+  update-k8s-manifest:
+    runs-on: ubuntu-latest
+
+    needs: [lint-and-analysis, build, image-update]
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.44.1/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Update tag in kubernetes deployment manifest
+        run: |
+          yq -i '
+            (. | select(.kind == "Deployment" and .metadata.name == "opentelemetry-demo-adservice")
+            .spec.template.spec.containers[].image) = "${{ secrets.DOCKER_USERNAME }}/otel-demo-ad-service:${{ github.run_id }}"
+          ' kubernetes/ad/deploy.yaml
+
+      - name: Update tags in kubernetes three-deploy manifest
+        run: |
+          yq -i '
+          (. | select(.kind == "Deployment" and .metadata.name == "opentelemetry-demo-adservice")
+          .spec.template.spec.containers[].image) = "${{ secrets.DOCKER_USERNAME }}/otel-demo-ad-service:${{ github.run_id }}" |
+
+          (. | select(.kind == "Deployment" and .metadata.name == "opentelemetry-demo-productcatalogservice")
+          .spec.template.spec.containers[].image) = "${{ secrets.DOCKER_USERNAME }}/otel-demo-product-catalog-service:${{ github.run_id }}" |
+
+          (. | select(.kind == "Deployment" and .metadata.name == "opentelemetry-demo-recommendationservice")
+          .spec.template.spec.containers[].image) = "${{ secrets.DOCKER_USERNAME }}/otel-demo-recommendation-service:${{ github.run_id }}"
+          ' kubernetes/three-deploy.yaml
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.email "mohdsaud1523@gmail.com"
+          git config --global user.name "Saud215"
+          git add kubernetes/ad/deploy.yaml kubernetes/three-deploy.yaml
+          git commit -m "[CI]: Update microservice image tags" || echo "No changes to commit"
+          git push origin HEAD:main

@@ -5,7 +5,6 @@ kind: Deployment
 metadata:
   name: opentelemetry-demo-recommendationservice
   labels:
-    
     opentelemetry.io/name: opentelemetry-demo-recommendationservice
     app.kubernetes.io/instance: opentelemetry-demo
     app.kubernetes.io/component: recommendationservice
@@ -17,12 +16,10 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      
       opentelemetry.io/name: opentelemetry-demo-recommendationservice
   template:
     metadata:
       labels:
-        
         opentelemetry.io/name: opentelemetry-demo-recommendationservice
         app.kubernetes.io/instance: opentelemetry-demo
         app.kubernetes.io/component: recommendationservice
@@ -31,10 +28,9 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: recommendationservice
-          image: 'ghcr.io/open-telemetry/demo:1.12.0-recommendationservice'
+          image: "saud215/otel-demo-recommendation-service:latest"
           imagePullPolicy: IfNotPresent
           ports:
-            
             - containerPort: 8080
               name: service
           env:
@@ -44,19 +40,19 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.labels['app.kubernetes.io/component']
             - name: OTEL_COLLECTOR_NAME
-              value: 'opentelemetry-demo-otelcol'
+              value: "opentelemetry-demo-otelcol"
             - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
               value: cumulative
             - name: RECOMMENDATION_SERVICE_PORT
               value: "8080"
             - name: PRODUCT_CATALOG_SERVICE_ADDR
-              value: 'opentelemetry-demo-productcatalogservice:8080'
+              value: "opentelemetry-demo-productcatalogservice:8080"
             - name: OTEL_PYTHON_LOG_CORRELATION
               value: "true"
             - name: PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
               value: python
             - name: FLAGD_HOST
-              value: 'opentelemetry-demo-flagd'
+              value: "opentelemetry-demo-flagd"
             - name: FLAGD_PORT
               value: "8013"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
