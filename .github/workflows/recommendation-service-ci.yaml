@@ -110,23 +110,11 @@ jobs:
             .spec.template.spec.containers[].image) = "${{ secrets.DOCKER_USERNAME }}/otel-demo-recommendation-service:${{ github.run_id }}"
           ' kubernetes/recommendation/deploy.yaml
 
-      - name: Update tags in kubernetes three-deploy manifest
-        run: |
-          yq -i '
-          (. | select(.kind == "Deployment" and .metadata.name == "opentelemetry-demo-adservice")
-          .spec.template.spec.containers[].image) = "${{ secrets.DOCKER_USERNAME }}/otel-demo-ad-service:${{ github.run_id }}" |
-
-          (. | select(.kind == "Deployment" and .metadata.name == "opentelemetry-demo-productcatalogservice")
-          .spec.template.spec.containers[].image) = "${{ secrets.DOCKER_USERNAME }}/otel-demo-product-catalog-service:${{ github.run_id }}" |
-
-          (. | select(.kind == "Deployment" and .metadata.name == "opentelemetry-demo-recommendationservice")
-          .spec.template.spec.containers[].image) = "${{ secrets.DOCKER_USERNAME }}/otel-demo-recommendation-service:${{ github.run_id }}"
-          ' kubernetes/three-deploy.yaml
-
       - name: Commit and push changes
         run: |
           git config --global user.email "mohdsaud1523@gmail.com"
           git config --global user.name "Saud215"
-          git add kubernetes/recommendation/deploy.yaml kubernetes/three-deploy.yaml
+          git add kubernetes/recommendation/deploy.yaml
           git commit -m "[CI]: Update microservice image tags [skip ci] " || echo "No changes to commit"
+          git pull --rebase origin main  
           git push origin HEAD:main

@@ -1,0 +1,46 @@
+name: Sync three-deploy
+
+on:
+  workflow_run:
+    workflows:
+      - product-catalog-service-ci
+      - recommendation-service-ci
+      - ad-service-ci
+    types:
+      - completed
+
+concurrency:
+  group: sync-three-deploy
+  cancel-in-progress: false
+
+jobs:
+  sync-three-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Wait to avoid race
+        run: sleep 30
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Sync and update three-deploy.yaml
+        run: |
+          cat kubernetes/ad/deploy.yaml \
+          kubernetes/productcatalog/deploy.yaml \
+          kubernetes/recommendation/deploy.yaml \
+          kubernetes/ad/svc.yaml \
+          kubernetes/productcatalog/svc.yaml \
+          kubernetes/recommendation/svc.yaml \
+          > kubernetes/three-deploy.yaml
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.email "mohdsaud1523@gmail.com"
+          git config --global user.name "Saud215"
+          git add kubernetes/three-deploy.yaml
+          git commit -m "[CI]: Sync three-deploy.yaml [skip ci]" || echo "No changes"
+          git pull --rebase origin main
+          git push origin HEAD:main
