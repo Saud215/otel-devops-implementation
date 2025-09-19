@@ -28,7 +28,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: adservice
-          image: "saud215/otel-demo-ad-service:latest"
+          image: "saud215/otel-demo-ad-service:17867504804"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -90,7 +90,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: productcatalogservice
-          image: saud215/otel-demo-product-catalog-service:latest
+          image: saud215/otel-demo-product-catalog-service:17867504807
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
