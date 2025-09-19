@@ -28,7 +28,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: recommendationservice
-          image: "saud215/otel-demo-recommendation-service:latest"
+          image: "saud215/otel-demo-recommendation-service:17867504823"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
