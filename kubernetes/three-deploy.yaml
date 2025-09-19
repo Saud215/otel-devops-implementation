@@ -1,4 +1,5 @@
 ---
+# Source: opentelemetry-demo/templates/component.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -59,8 +60,8 @@ spec:
               memory: 300Mi
           volumeMounts:
       volumes:
-
 ---
+# Source: opentelemetry-demo/templates/component.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -119,8 +120,8 @@ spec:
               memory: 20Mi
           volumeMounts:
       volumes:
-
 ---
+# Source: opentelemetry-demo/templates/component.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -149,7 +150,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: recommendationservice
-          image: "saud215/otel-demo-recommendation-service:latest"
+          image: "saud215/otel-demo-recommendation-service:17867504823"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -185,8 +186,8 @@ spec:
               memory: 500Mi
           volumeMounts:
       volumes:
-
 ---
+# Source: opentelemetry-demo/templates/component.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -206,13 +207,14 @@ spec:
       targetPort: 8080
   selector:
     opentelemetry.io/name: opentelemetry-demo-adservice
-
 ---
+# Source: opentelemetry-demo/templates/component.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: opentelemetry-demo-productcatalogservice
   labels:
+    
     opentelemetry.io/name: opentelemetry-demo-productcatalogservice
     app.kubernetes.io/instance: opentelemetry-demo
     app.kubernetes.io/component: productcatalogservice
@@ -226,14 +228,16 @@ spec:
       name: tcp-service
       targetPort: 8080
   selector:
+    
     opentelemetry.io/name: opentelemetry-demo-productcatalogservice
-
 ---
+# Source: opentelemetry-demo/templates/component.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: opentelemetry-demo-recommendationservice
   labels:
+    
     opentelemetry.io/name: opentelemetry-demo-recommendationservice
     app.kubernetes.io/instance: opentelemetry-demo
     app.kubernetes.io/component: recommendationservice
@@ -247,4 +251,5 @@ spec:
       name: tcp-service
       targetPort: 8080
   selector:
+    
     opentelemetry.io/name: opentelemetry-demo-recommendationservice
