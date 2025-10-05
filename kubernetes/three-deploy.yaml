@@ -1,68 +1,5 @@
 ---
 # Source: opentelemetry-demo/templates/component.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: ad
-  labels:
-    opentelemetry.io/name: ad
-    app.kubernetes.io/instance: opentelemetry-demo
-    app.kubernetes.io/component: ad
-    app.kubernetes.io/name: ad
-    app.kubernetes.io/version: "2.0.2"
-    app.kubernetes.io/part-of: opentelemetry-demo
-spec:
-  type: ClusterIP
-  ports:
-    - port: 8080
-      name: tcp-service
-      targetPort: 8080
-  selector:
-    opentelemetry.io/name: ad
----
-# Source: opentelemetry-demo/templates/component.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: product-catalog
-  labels:
-    opentelemetry.io/name: product-catalog
-    app.kubernetes.io/instance: opentelemetry-demo
-    app.kubernetes.io/component: product-catalog
-    app.kubernetes.io/name: product-catalog
-    app.kubernetes.io/version: "2.0.2"
-    app.kubernetes.io/part-of: opentelemetry-demo
-spec:
-  type: ClusterIP
-  ports:
-    - port: 8080
-      name: tcp-service
-      targetPort: 8080
-  selector:
-    opentelemetry.io/name: product-catalog
----
-# Source: opentelemetry-demo/templates/component.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: recommendation
-  labels:
-    opentelemetry.io/name: recommendation
-    app.kubernetes.io/instance: opentelemetry-demo
-    app.kubernetes.io/component: recommendation
-    app.kubernetes.io/name: recommendation
-    app.kubernetes.io/version: "2.0.2"
-    app.kubernetes.io/part-of: opentelemetry-demo
-spec:
-  type: ClusterIP
-  ports:
-    - port: 8080
-      name: tcp-service
-      targetPort: 8080
-  selector:
-    opentelemetry.io/name: recommendation
----
-# Source: opentelemetry-demo/templates/component.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -256,3 +193,66 @@ spec:
               memory: 500Mi
           volumeMounts:
       volumes:
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ad
+  labels:
+    opentelemetry.io/name: ad
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: ad
+    app.kubernetes.io/name: ad
+    app.kubernetes.io/version: "2.0.2"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: tcp-service
+      targetPort: 8080
+  selector:
+    opentelemetry.io/name: ad
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-catalog
+  labels:
+    opentelemetry.io/name: product-catalog
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: product-catalog
+    app.kubernetes.io/name: product-catalog
+    app.kubernetes.io/version: "2.0.2"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: tcp-service
+      targetPort: 8080
+  selector:
+    opentelemetry.io/name: product-catalog
+---
+# Source: opentelemetry-demo/templates/component.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendation
+  labels:
+    opentelemetry.io/name: recommendation
+    app.kubernetes.io/instance: opentelemetry-demo
+    app.kubernetes.io/component: recommendation
+    app.kubernetes.io/name: recommendation
+    app.kubernetes.io/version: "2.0.2"
+    app.kubernetes.io/part-of: opentelemetry-demo
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      name: tcp-service
+      targetPort: 8080
+  selector:
+    opentelemetry.io/name: recommendation
