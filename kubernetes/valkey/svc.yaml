@@ -3,21 +3,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: opentelemetry-demo-valkey
+  name: valkey-cart
   labels:
-    
-    opentelemetry.io/name: opentelemetry-demo-valkey
+    opentelemetry.io/name: valkey-cart
     app.kubernetes.io/instance: opentelemetry-demo
-    app.kubernetes.io/component: valkey
-    app.kubernetes.io/name: opentelemetry-demo-valkey
-    app.kubernetes.io/version: "1.12.0"
+    app.kubernetes.io/component: valkey-cart
+    app.kubernetes.io/name: valkey-cart
+    app.kubernetes.io/version: "2.0.2"
     app.kubernetes.io/part-of: opentelemetry-demo
 spec:
   type: ClusterIP
   ports:
     - port: 6379
-      name: valkey
+      name: valkey-cart
       targetPort: 6379
   selector:
-    
-    opentelemetry.io/name: opentelemetry-demo-valkey
+    opentelemetry.io/name: valkey-cart

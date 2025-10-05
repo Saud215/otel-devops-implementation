@@ -3,38 +3,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: opentelemetry-demo-cartservice
+  name: cart
   labels:
-    
-    opentelemetry.io/name: opentelemetry-demo-cartservice
+    opentelemetry.io/name: cart
     app.kubernetes.io/instance: opentelemetry-demo
-    app.kubernetes.io/component: cartservice
-    app.kubernetes.io/name: opentelemetry-demo-cartservice
-    app.kubernetes.io/version: "1.12.0"
+    app.kubernetes.io/component: cart
+    app.kubernetes.io/name: cart
+    app.kubernetes.io/version: "2.0.2"
     app.kubernetes.io/part-of: opentelemetry-demo
 spec:
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      
-      opentelemetry.io/name: opentelemetry-demo-cartservice
+      opentelemetry.io/name: cart
   template:
     metadata:
       labels:
-        
-        opentelemetry.io/name: opentelemetry-demo-cartservice
+        opentelemetry.io/name: cart
         app.kubernetes.io/instance: opentelemetry-demo
-        app.kubernetes.io/component: cartservice
-        app.kubernetes.io/name: opentelemetry-demo-cartservice
+        app.kubernetes.io/component: cart
+        app.kubernetes.io/name: cart
     spec:
       serviceAccountName: opentelemetry-demo
       containers:
-        - name: cartservice
-          image: 'ghcr.io/open-telemetry/demo:1.12.0-cartservice'
+        - name: cart
+          image: "ghcr.io/open-telemetry/demo:2.0.2-cart"
           imagePullPolicy: IfNotPresent
           ports:
-            
             - containerPort: 8080
               name: service
           env:
@@ -44,33 +40,33 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.labels['app.kubernetes.io/component']
             - name: OTEL_COLLECTOR_NAME
-              value: 'opentelemetry-demo-otelcol'
+              value: otel-collector
             - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
               value: cumulative
-            - name: CART_SERVICE_PORT
+            - name: CART_PORT
               value: "8080"
             - name: ASPNETCORE_URLS
-              value: http://*:$(CART_SERVICE_PORT)
+              value: http://*:$(CART_PORT)
             - name: VALKEY_ADDR
-              value: 'opentelemetry-demo-valkey:6379'
+              value: valkey-cart:6379
             - name: FLAGD_HOST
-              value: 'opentelemetry-demo-flagd'
+              value: flagd
             - name: FLAGD_PORT
               value: "8013"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: http://$(OTEL_COLLECTOR_NAME):4317
             - name: OTEL_RESOURCE_ATTRIBUTES
-              value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.12.0
+              value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=2.0.2
           resources:
             limits:
               memory: 160Mi
           volumeMounts:
       initContainers:
         - command:
-          - sh
-          - -c
-          - until nc -z -v -w30 opentelemetry-demo-valkey 6379; do echo waiting
-            for valkey; sleep 2; done;
+            - sh
+            - -c
+            - until nc -z -v -w30 valkey-cart 6379; do echo waiting for valkey-cart; sleep 2;
+              done;
           image: busybox:latest
-          name: wait-for-valkey
+          name: wait-for-valkey-cart
       volumes:
