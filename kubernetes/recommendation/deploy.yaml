@@ -3,31 +3,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: opentelemetry-demo-recommendationservice
+  name: recommendation
   labels:
-    opentelemetry.io/name: opentelemetry-demo-recommendationservice
+    opentelemetry.io/name: recommendation
     app.kubernetes.io/instance: opentelemetry-demo
-    app.kubernetes.io/component: recommendationservice
-    app.kubernetes.io/name: opentelemetry-demo-recommendationservice
-    app.kubernetes.io/version: "1.12.0"
+    app.kubernetes.io/component: recommendation
+    app.kubernetes.io/name: recommendation
+    app.kubernetes.io/version: "2.0.2"
     app.kubernetes.io/part-of: opentelemetry-demo
 spec:
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      opentelemetry.io/name: opentelemetry-demo-recommendationservice
+      opentelemetry.io/name: recommendation
   template:
     metadata:
       labels:
-        opentelemetry.io/name: opentelemetry-demo-recommendationservice
+        opentelemetry.io/name: recommendation
         app.kubernetes.io/instance: opentelemetry-demo
-        app.kubernetes.io/component: recommendationservice
-        app.kubernetes.io/name: opentelemetry-demo-recommendationservice
+        app.kubernetes.io/component: recommendation
+        app.kubernetes.io/name: recommendation
     spec:
       serviceAccountName: opentelemetry-demo
       containers:
-        - name: recommendationservice
+        - name: recommendation
           image: "saud215/otel-demo-recommendation-service:17867504823"
           imagePullPolicy: IfNotPresent
           ports:
@@ -40,25 +40,25 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.labels['app.kubernetes.io/component']
             - name: OTEL_COLLECTOR_NAME
-              value: "opentelemetry-demo-otelcol"
+              value: otel-collector
             - name: OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
               value: cumulative
-            - name: RECOMMENDATION_SERVICE_PORT
+            - name: RECOMMENDATION_PORT
               value: "8080"
-            - name: PRODUCT_CATALOG_SERVICE_ADDR
-              value: "opentelemetry-demo-productcatalogservice:8080"
+            - name: PRODUCT_CATALOG_ADDR
+              value: product-catalog:8080
             - name: OTEL_PYTHON_LOG_CORRELATION
               value: "true"
             - name: PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
               value: python
             - name: FLAGD_HOST
-              value: "opentelemetry-demo-flagd"
+              value: flagd
             - name: FLAGD_PORT
               value: "8013"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: http://$(OTEL_COLLECTOR_NAME):4317
             - name: OTEL_RESOURCE_ATTRIBUTES
-              value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=1.12.0
+              value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=2.0.2
           resources:
             limits:
               memory: 500Mi
